@@ -1,0 +1,16 @@
+services:
+  docs:
+    image: faculty_website_backend_local_docs
+    container_name: faculty_website_backend_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./faculty_website_backend:/app/faculty_website_backend:z
+    ports:
+      - '9000:9000'
+    command: /start-docs

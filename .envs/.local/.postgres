@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=faculty_website_backend
+POSTGRES_USER=sMCQGmxjHOApuXNOCAXZlggBxTiztNSN
+POSTGRES_PASSWORD=alhfNzifqlBz1jv5ik0EsLXnOMUlblwF4rrhFRkDkbJv1kZfio3an915TGErRuj1
