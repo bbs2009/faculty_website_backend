@@ -9,9 +9,17 @@ from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
+from faculty_website_backend.publications.views import test_view
+
+from faculty_website_backend.publications.api.views import PublicationListCreateAPIView, PublicationRetrieveUpdateDestroyAPIView
+
+# urlpatterns = [
+    
+# ]
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    # path("test_view", test_view, name="test_view"),
     path(
         "about/",
         TemplateView.as_view(template_name="pages/about.html"),
@@ -35,6 +43,8 @@ urlpatterns += [
     # DRF auth token
     path("api/auth-token/", obtain_auth_token),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    path('publications/', PublicationListCreateAPIView.as_view(), name='publication-list-create'),
+    path('publications/<int:pk>/', PublicationRetrieveUpdateDestroyAPIView.as_view(), name='publication-detail'),
     path(
         "api/docs/",
         SpectacularSwaggerView.as_view(url_name="api-schema"),
