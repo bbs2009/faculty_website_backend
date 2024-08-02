@@ -1,3 +1,77 @@
+from rest_framework import status, permissions
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import action
+from faculty_website_backend.publications.models import Publication
+from .serializers import PublicationSerializer
+
+
+class PublicationViewSet(GenericViewSet):
+    queryset = Publication.objects.all()
+    serializer_class = PublicationSerializer
+    pagination_class = PageNumberPagination
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.paginate_queryset(Publication.objects.all())
+        serializer = PublicationSerializer(queryset, many=True)
+        return self.get_paginated_response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = PublicationSerializer(instance)
+        return Response(serializer.data)
+
+    # @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def create(self, request, *args, **kwargs):
+        serializer = PublicationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # @action(detail=True, methods=['put', 'patch'], permission_classes=[permissions.IsAuthenticated])
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = PublicationSerializer(instance, data=request.data, partial=(request.method == 'PATCH'))
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # @action(detail=True, methods=['delete'], permission_classes=[permissions.IsAuthenticated])
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    @action(detail=True, methods=['get'], permission_classes=[permissions.AllowAny])
+    def search(self, request, *args, **kwargs):
+        query = request.query_params.get('q', None)
+        if query is not None:
+            queryset = Publication.objects.filter(
+                Q(title__icontains=query) | Q(description__icontains=query)
+            )
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = PublicationSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = PublicationSerializer(queryset, many=True)
+            return Response(serializer.data)
+        return Response({"detail": "No query provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
 # from rest_framework import status
 # from rest_framework.decorators import action
 # from rest_framework.mixins import ListModelMixin
@@ -25,14 +99,73 @@
 #         serializer = UserSerializer(request.user, context={"request": request})
 #         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
-from rest_framework import generics
-from faculty_website_backend.publications.models import Publication
-from .serializers import PublicationSerializer
+# from rest_framework import generics
+# from rest_framework import status
+# from rest_framework.mixins import ListModelMixin
+# from rest_framework.mixins import RetrieveModelMixin
+# from rest_framework.mixins import UpdateModelMixin
+# from rest_framework.mixins import DestroyModelMixin
+# from rest_framework.mixins import CreateModelMixin
+# from rest_framework.response import Response
+# from rest_framework.viewsets import GenericViewSet
+# from rest_framework.pagination import PageNumberPagination
+# from faculty_website_backend.publications.models import Publication
+# from .serializers import PublicationSerializer
 
-class PublicationListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Publication.objects.all()
-    serializer_class = PublicationSerializer
+#I need create, retrieve, list, update, and delete functionality for the Publication model
+#list, retrive without any authentication
+#update, delete, create with authentication
 
-class PublicationRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Publication.objects.all()
-    serializer_class = PublicationSerializer
+# class PublicationViewSet(GenericViewSet):
+#     queryset = Publication.objects.all()
+#     serializer_class = PublicationSerializer
+#     pagination_class = PageNumberPagination
+
+#     def list(self, request, *args, **kwargs):
+#         queryset = Publication.objects.all()
+#         serializer = PublicationSerializer(queryset, many=True)
+#         return Response(serializer.data)
+
+#     def retrieve(self, request, *args, **kwargs):
+#         instance = self.get_object()
+#         serializer = PublicationSerializer(instance)
+#         return Response(serializer.data)
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = PublicationSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def update(self, request, *args, **kwargs):
+#         instance = self.get_object()
+#         serializer = PublicationSerializer(instance, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def destroy(self, request, *args, **kwargs):
+#         instance = self.get_object()
+#         instance.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+
+# class PublicationViewSet(CreateModelMixin, RetrieveModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin, GenericViewSet):
+#     queryset = Publication.objects.all()
+#     serializer_class = PublicationSerializer
+#     pagination_class = PageNumberPagination
+
+
+
+# class PublicationListCreateAPIView(generics.ListCreateAPIView):
+#     queryset = Publication.objects.all()
+#     serializer_class = PublicationSerializer
+#     pagination_class = PageNumberPagination
+        
+
+# class PublicationRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Publication.objects.all()
+#     serializer_class = PublicationSerializer
