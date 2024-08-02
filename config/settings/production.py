@@ -193,6 +193,7 @@ SPECTACULAR_SETTINGS["SERVERS"] = [
 CORS_ALLOWED_ORIGINS = [
 
     "https://faculty-api.zsmu.zp.ua",
+	"https://faculty-website-hazel.vercel.app",
 	
 
 ]
