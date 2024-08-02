@@ -186,7 +186,12 @@ sentry_sdk.init(
 # -------------------------------------------------------------------------------
 # Tools that generate code samples can use SERVERS to point to the correct domain
 SPECTACULAR_SETTINGS["SERVERS"] = [
-    {"url": "https://faculty.local", "description": "Production server"},
+    {"url": "https://faculty-api.zsmu.zp.ua", "description": "Production server"},
 ]
 # Your stuff...
 # ------------------------------------------------------------------------------
+CORS_ALLOWED_ORIGINS = [
+
+    "https://faculty-api.zsmu.zp.ua"
+
+]
