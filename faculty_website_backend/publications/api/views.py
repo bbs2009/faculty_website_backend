@@ -1,4 +1,5 @@
 from rest_framework import status, permissions
+# from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.pagination import PageNumberPagination
@@ -13,22 +14,23 @@ class PublicationViewSet(GenericViewSet):
     pagination_class = PageNumberPagination
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
+        if self.action in ['list', 'retrieve', 'search']:   
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
 
-
+    
     def list(self, request, *args, **kwargs):
         queryset = self.paginate_queryset(Publication.objects.all())
         serializer = PublicationSerializer(queryset, many=True)
         return self.get_paginated_response(serializer.data)
+    
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = PublicationSerializer(instance)
         return Response(serializer.data)
 
-    # @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+   
     def create(self, request, *args, **kwargs):
         serializer = PublicationSerializer(data=request.data)
         if serializer.is_valid():
@@ -36,7 +38,7 @@ class PublicationViewSet(GenericViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # @action(detail=True, methods=['put', 'patch'], permission_classes=[permissions.IsAuthenticated])
+    
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = PublicationSerializer(instance, data=request.data, partial=(request.method == 'PATCH'))
@@ -45,14 +47,14 @@ class PublicationViewSet(GenericViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # @action(detail=True, methods=['delete'], permission_classes=[permissions.IsAuthenticated])
+    
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-    @action(detail=True, methods=['get'], permission_classes=[permissions.AllowAny])
+    
     def search(self, request, *args, **kwargs):
         query = request.query_params.get('q', None)
         if query is not None:
@@ -160,12 +162,15 @@ class PublicationViewSet(GenericViewSet):
 
 
 
-# class PublicationListCreateAPIView(generics.ListCreateAPIView):
+# class PublicationCreateAPIView(generics.CreateAPIView):
 #     queryset = Publication.objects.all()
 #     serializer_class = PublicationSerializer
 #     pagination_class = PageNumberPagination
+#     permissions = [permissions.IsAuthenticated]
         
+    
 
-# class PublicationRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+# class PublicationRetrieveUpdateDestroyAPIView(generics.CreateAPIView):
 #     queryset = Publication.objects.all()
 #     serializer_class = PublicationSerializer
+#     pagination_class = PageNumberPagination

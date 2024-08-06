@@ -26,14 +26,16 @@ class PublicationSerializer(serializers.ModelSerializer):
         read_only_fields = ['fileData', 'fileName', 'file']
 
     def create(self, validated_data):
+        # print(validated_data)
         file = validated_data.pop('file', None)
         instance = Publication.objects.create(**validated_data)
         
         if file:
             file_name = file.name
+            # print(file_name)
             file_content = file.read()
             file_base64 = base64.b64encode(file_content).decode('utf-8')
-            
+            # print(file_base64)
             instance.fileName = file_name
             instance.fileData = file_base64
             instance.save()
