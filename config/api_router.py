@@ -7,7 +7,7 @@ from faculty_website_backend.publications.api.views import PublicationViewSet
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
-router.register("users", UserViewSet)
+# router.register("users", UserViewSet)
 router.register("publications", PublicationViewSet)
 
 
