@@ -191,13 +191,10 @@ SPECTACULAR_SETTINGS["SERVERS"] = [
 # Your stuff...
 # ------------------------------------------------------------------------------
 CORS_ALLOWED_ORIGINS = [
-
     "https://faculty-api.zsmu.zp.ua",
 	"https://faculty-website-hazel.vercel.app",
-	
-
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-	"https://faculty-api.zsmu.zp.ua",
-	]
+# CSRF_TRUSTED_ORIGINS = [
+# 	"https://faculty-api.zsmu.zp.ua",
+# 	]
