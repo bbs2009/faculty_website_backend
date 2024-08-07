@@ -197,3 +197,7 @@ CORS_ALLOWED_ORIGINS = [
 	
 
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+	"https://faculty-api.zsmu.zp.ua",
+	]
