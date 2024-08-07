@@ -83,7 +83,7 @@ STORAGES = {
         "BACKEND": "storages.backends.azure_storage.AzureStorage",
         "OPTIONS": {
             "location": "media",
-            "file_overwrite": False,
+            "overwrite_files": False,
         },
     },
     "staticfiles": {
